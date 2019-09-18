@@ -229,6 +229,34 @@ describe('caster module', () => {
       }).toThrow(CastError);
     });
 
+    let expectedDate = new Date();
+    expectedDate.setTime(485161200000);
+
+    it('to date', () => {
+      expect(casters.castToDate('05/17/1985')).toEqual(expectedDate);
+      expect(casters.castToDate(485161200000)).toEqual(expectedDate);
+      expect(casters.castToDate(expectedDate)).toEqual(expectedDate);
+
+
+    });
+
+    it('to date throwing errors', () => {
+
+      expect(() => {
+        casters.castToDate(['an', 'array']);
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToDate({ an: 'object' });
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToDate(() => { });
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToDate('34/2122/1111');
+      }).toThrow(CastError);
+
+    });
+
   });
 
 });
