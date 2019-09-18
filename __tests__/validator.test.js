@@ -1,5 +1,5 @@
 const validator = require('../lib/validator.js').validator;
-const casters = require('../lib/validator.js').casters;
+const casters = require('../lib/validator.js');
 const { CastError } = require('../lib/Errors');
 
 describe('validator module', () => {
