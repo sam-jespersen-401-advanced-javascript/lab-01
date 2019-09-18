@@ -1,4 +1,6 @@
-const validator = require('../lib/validator.js');
+const validator = require('../lib/validator.js').validator;
+const casters = require('../lib/validator.js').casters;
+const { CastError } = require('../lib/Errors');
 
 describe('validator module', () => {
 
@@ -152,4 +154,83 @@ describe('validator module', () => {
     });
 
   });
+});
+
+describe('caster module', () => {
+
+  describe('coerce data', () => {
+
+    it('to string', () => {
+      expect(casters.castToString(42)).toBe('42');
+      expect(casters.castToString(true)).toBe('true');
+      expect(casters.castToString(false)).toBe('false');
+      expect(casters.castToString(new Date())).toBe(String(new Date()));
+    });
+
+    it('to string throwing errors', () => {
+
+      expect(() => {
+        casters.castToString(['an', 'array']);
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToString({ an: 'object' });
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToString(() => { });
+      }).toThrow(CastError);
+    });
+
+    it('to number', () => {
+      expect(casters.castToNumber('42')).toBe(42);
+      expect(casters.castToNumber(true)).toBe(1);
+      expect(casters.castToNumber(false)).toBe(0);
+      expect(casters.castToNumber(new Date())).toBe(Number(new Date()));
+    });
+
+    it('to number throwing errors', () => {
+
+      expect(() => {
+        casters.castToNumber(['an', 'array']);
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToNumber({ an: 'object' });
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToNumber(() => { });
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToNumber('abc');
+      }).toThrow(CastError);
+    });
+
+    it('to boolean', () => {
+      expect(casters.castToBoolean(1)).toBe(true);
+      expect(casters.castToBoolean(0)).toBe(false);
+      expect(casters.castToBoolean('true')).toBe(true);
+      expect(casters.castToBoolean('false')).toBe(false);
+      expect(casters.castToBoolean(true)).toBe(true);
+      expect(casters.castToBoolean(false)).toBe(false);
+    });
+
+    it('to boolean throwing errors', () => {
+
+      expect(() => {
+        casters.castToBoolean(['an', 'array']);
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToBoolean({ an: 'object' });
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToBoolean(() => { });
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToBoolean('abc');
+      }).toThrow(CastError);
+      expect(() => {
+        casters.castToBoolean(2);
+      }).toThrow(CastError);
+    });
+
+  });
+
 });
