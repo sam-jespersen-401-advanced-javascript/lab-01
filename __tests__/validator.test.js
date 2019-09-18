@@ -114,7 +114,7 @@ describe('validator module', () => {
     });
 
     it('arrays', () => {
-      expect(validator.getValidator([1, 2, 3])).toBe(validator.isArray);
+      expect(validator.getValidator([1, 2, 3])).toContain(validator.isArray);
 
     });
 
@@ -134,22 +134,20 @@ describe('validator module', () => {
     });
 
     it('array of strings', () => {
-      expect(validator.getValidator(['a', 'string'], true)).toBe(validator.isArrayOfStrings);
-
+      expect(validator.getValidator(['a', 'string'])).toContain(validator.isArrayOfStrings);
     });
-
     it('array of numbers', () => {
-      expect(validator.getValidator([6, 9], true)).toBe(validator.isArrayOfNumbers);
+      expect(validator.getValidator([6, 9])).toContain(validator.isArrayOfNumbers);
 
     });
 
     it('array of objects', () => {
-      expect(validator.getValidator([{}, {}], true)).toBe(validator.isArrayOfObjects);
+      expect(validator.getValidator([{}, {}])).toContain(validator.isArrayOfObjects);
 
     });
 
     it('array of booleans', () => {
-      expect(validator.getValidator([true, false], true)).toBe(validator.isArrayOfBooleans);
+      expect(validator.getValidator([true, false])).toContain(validator.isArrayOfBooleans);
 
     });
 
