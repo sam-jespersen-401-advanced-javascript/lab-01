@@ -1,12 +1,12 @@
-# LAB 01 
+# LAB 02 
 
 ## Validator
 
 ### Author: Sam Jespersen
 
 ### Links and Resources
-* [submission PR](https://github.com/sam-jespersen-401-advanced-javascript/lab-01/pull/1)
-* [travis](https://travis-ci.com/sam-jespersen-401-advanced-javascript/lab-01a)
+* [submission PR](https://github.com/sam-jespersen-401-advanced-javascript/lab-01/pull/2)
+* [travis](https://travis-ci.com/sam-jespersen-401-advanced-javascript/lab-01)
 
 #### Documentation
 * [jsdoc](./docs)

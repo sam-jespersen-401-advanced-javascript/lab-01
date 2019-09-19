@@ -26,7 +26,118 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>
+            <pre class="prettyprint source linenums"><code>const { CastError } = require('./Errors');
+
+/**
+ * Coerce to string
+ * @param input
+ * @throws CastError
+ * @returns {string} 
+ */
+const castToString = (input) => {
+  if(input instanceof Date) {
+    return String(input);
+
+  } else if(input instanceof Array || input instanceof Object || input instanceof Function) {
+    throw new CastError('string', input);
+
+  } else {
+    return String(input);
+  }
+};
+
+/**
+ * Coerce to number
+ * @param input
+ * @throws CastError
+ * @returns {number} 
+ */
+
+const castToNumber = (input) => {
+  if(input instanceof Date) {
+    return Number(input);
+  } else if(input instanceof Array || input instanceof Object || input instanceof Function || isNaN(Number(input))) {
+    throw new CastError('number', input);
+  } else {
+    return Number(input);
+  }
+
+};
+
+/**
+ * Coerce to boolean
+ * @param input
+ * @throws CastError
+ * @returns {boolean} 
+ */
+
+const castToBoolean = (input) => {
+  if(isBool(input)) {
+    return input;
+  }
+  if(isString(input) || isNumber(input)) {
+    if(input === 'true' || input === 1 || input === 0) {
+      return Boolean(input);
+    }
+    if(input === 'false') {
+      return false;
+    }
+  }
+  throw new CastError('boolean', input);
+};
+
+
+/**
+ * Coerce to date
+ * @param input
+ * @throws CastError
+ * @returns {Date} 
+ */
+
+const castToDate = (input) => {
+  if(input instanceof Date) {
+    return input;
+  }
+  if(isNumber(input)) {
+    const date = new Date();
+    date.setTime(input);
+    return date;
+  }
+  if(isString(input)) {
+    const date = Date.parse(input);
+    let newDate = new Date();
+    newDate.setTime(date);
+
+    if(!isNaN(newDate)) {
+      return newDate;
+    } else {
+      throw new CastError('date', input);
+    }
+  }
+  throw new CastError('date', input);
+};
+
+const getCaster = (input) => {
+  const casterList = {
+    'string': castToString,
+    'number': castToNumber,
+    'boolean': castToBoolean,
+    'date': castToDate
+  };
+  return casterList[input];
+};
+
+
+module.exports = {
+  castToString,
+  castToNumber,
+  castToBoolean,
+  castToDate,
+  getCaster
+};
+
+
+
 /**
  * Is this a string?
  * @param input
@@ -127,23 +238,25 @@ const isArrayOfBooleans = (arr) => {
  * @param {boolean} [inputIsArrayOfData] Evaluate input as contained within array?
  * @returns {function}
  */
-const getValidator = (input, inputIsArrayOfData) => {
+const getValidator = (input) => {
 
-  const funcs = Object.values(module.exports);
+  const funcs = Object.values(module.exports.validator);
+  let result = [];
 
   for(let func in funcs) {
     const testedFunction = funcs[func];
+    if(testedFunction === getValidator) break;
     if(testedFunction(input) === true) {
-      if(inputIsArrayOfData &amp;&amp; testedFunction === isArray) {
-        continue;
-      } else {
-        return testedFunction;
-      }
+      result.push(testedFunction);
     }
   }
+  if(result.length === 1) return result[0];
+  if(result.length > 1) return result;
+
+
 };
 
-module.exports = {
+module.exports.validator = {
   isString,
   isNumber,
   isArray,
@@ -165,13 +278,13 @@ module.exports = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#getValidator">getValidator</a></li><li><a href="global.html#isArray">isArray</a></li><li><a href="global.html#isArrayOfBooleans">isArrayOfBooleans</a></li><li><a href="global.html#isArrayOfNumbers">isArrayOfNumbers</a></li><li><a href="global.html#isArrayOfObjects">isArrayOfObjects</a></li><li><a href="global.html#isArrayOfStrings">isArrayOfStrings</a></li><li><a href="global.html#isBool">isBool</a></li><li><a href="global.html#isFunc">isFunc</a></li><li><a href="global.html#isNumber">isNumber</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isString">isString</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Schema.html">Schema</a></li></ul><h3>Global</h3><ul><li><a href="global.html#castToBoolean">castToBoolean</a></li><li><a href="global.html#castToDate">castToDate</a></li><li><a href="global.html#castToNumber">castToNumber</a></li><li><a href="global.html#castToString">castToString</a></li><li><a href="global.html#getValidator">getValidator</a></li><li><a href="global.html#isArray">isArray</a></li><li><a href="global.html#isArrayOfBooleans">isArrayOfBooleans</a></li><li><a href="global.html#isArrayOfNumbers">isArrayOfNumbers</a></li><li><a href="global.html#isArrayOfObjects">isArrayOfObjects</a></li><li><a href="global.html#isArrayOfStrings">isArrayOfStrings</a></li><li><a href="global.html#isBool">isBool</a></li><li><a href="global.html#isFunc">isFunc</a></li><li><a href="global.html#isNumber">isNumber</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isString">isString</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Sep 17 2019 09:21:08 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Sep 19 2019 09:38:01 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
